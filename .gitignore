@@ -13,10 +13,7 @@ __pycache__/
 
 # Submódulos e diretórios pesados de pipeline interno
 artefatos/
-IDD Paradigma/03 - Pipeline de Produção/rvm-visual-pipeline/
-IDD Paradigma/04 - Acervo de Episódios/
-IDD Paradigma/IDD Prática Melissa/
-IDD Paradigma/_checkpoint/
+IDD Paradigma/
 
 # Sistema Operacional e IDE
 .DS_Store
