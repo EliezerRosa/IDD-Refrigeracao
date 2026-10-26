@@ -11,11 +11,29 @@ __pycache__/
 *.m4a
 *.mov
 
+# Áudio intermediário de pipeline TTS e renderização
+*.mp3
+*.aac
+audio_segs/
+.temp_frames*/
+temp_recordings/
+temp_raw_record*/
+test_record_*/
+temp_text_generator/
+outputs/
+
 # Submódulos e diretórios pesados de pipeline interno
 artefatos/
 IDD Paradigma/
 
-# Sistema Operacional e IDE
+# Sistema Operacional, IDE e testes temporários
 .DS_Store
 Thumbs.db
 *.tmp
+test_*.png
+test_*.mp3
+teste_*.mp3
+valid_*.png
+transcript_match.txt
+producao_ytcenas_raw.txt
+

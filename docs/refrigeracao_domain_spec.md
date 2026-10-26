@@ -178,3 +178,153 @@ erDiagram
         boolean ativo
     }
 ```
+
+---
+
+## 5. Modelo UML Canônico (Arquitetura Comportamental)
+
+### 5.1 Diagrama de Casos de Uso (System Boundary & Atores)
+Os casos de uso representam as intenções operacionais e comportamentais suportadas pelo sistema:
+
+```mermaid
+flowchart TB
+    subgraph Atores["Atores Formais"]
+        Mec["👨‍🔧 Mecânico em Campo"]
+        Cli["🏢 Cliente / Síndico"]
+        RespTec["📜 Responsável Técnico (CREA/CFT)"]
+        Orq["👤 Eliézer (Orquestrador)"]
+        CronSys["🤖 Cron Trigger (Supabase)"]
+        Anvisa["⚖️ Fiscal Sanitário"]
+    end
+
+    subgraph SystemBoundary["Sistema IDD Refrigeração (HVAC-R)"]
+        UC01(["UC01: Bipar QR Code & Abrir Prontuário"])
+        UC02(["UC02: Consultar Ficha Técnica de Fábrica"])
+        UC03(["UC03: Executar Preventiva PMOC"])
+        UC04(["UC04: Checklist Normativo Portaria 3.523"])
+        UC05(["UC05: Registrar Medições (Pressões e Delta T)"])
+        UC06(["UC06: Calcular Superaquecimento/Sub-resfriamento"])
+        UC07(["UC07: Registrar Recarga de Fluido"])
+        UC08(["UC08: Teste Obrigatório de Estanqueidade"])
+        UC09(["UC09: Recolhimento Ecológico de Gás"])
+        UC10(["UC10: Abrir Chamado Emergencial por Severidade"])
+        UC11(["UC11: Solicitar Peça do Estoque Móvel"])
+        UC12(["UC12: Coletar Fotos e Assinatura"])
+        UC13(["UC13: Enviar Comprovante WhatsApp em < 90s"])
+        UC14(["UC14: Emitir Laudo PMOC com ART/TRT"])
+        UC15(["UC15: Gerar Preventivas Mensais Automáticas"])
+    end
+
+    Mec --> UC01
+    Mec --> UC02
+    Mec --> UC03
+    Mec --> UC05
+    Mec --> UC07
+    Mec --> UC09
+    Mec --> UC12
+
+    Cli --> UC10
+    Cli --> UC12
+    Cli --> UC13
+
+    RespTec --> UC14
+    CronSys --> UC15
+    Anvisa --> UC14
+
+    UC03 -.->|<<include>>| UC04
+    UC03 -.->|<<include>>| UC05
+    UC03 -.->|<<include>>| UC12
+    UC05 -.->|<<include>>| UC06
+    UC07 -.->|<<include>>| UC08
+    UC03 -.->|<<extend>>| UC11
+    UC10 -.->|<<extend>>| UC11
+    UC03 -.->|<<extend>>| UC14
+    UC12 -.->|<<include>>| UC13
+```
+
+### 5.2 Diagrama de Classes de Domínio (3 Compartimentos OMG)
+Classes puras com atributos privados (-) e métodos de domínio (+):
+
+```mermaid
+classDiagram
+    class Equipamento {
+        -UUID id
+        -String qrCodeId
+        -String fabricante
+        -String modelo
+        -Int capacidadeBtu
+        -String tipoFluidoGas
+        -String tensaoEletrica
+        +calcularRendimentoTermico() RendimentoEnum
+        +validarCompatibilidadeGas(fluido) Boolean
+        +getHistoricoIntervencoes() List~OS~
+    }
+
+    class OrdemServico {
+        -UUID id
+        -UUID equipamentoId
+        -UUID tecnicoId
+        -TipoAtendimento tipo
+        -EstadoOS status
+        -DateTime dataAgendamento
+        -DateTime dataConclusao
+        +iniciarAtendimento(tecnicoId) Void
+        +registrarMedicao(medicao) Result
+        +solicitarPeca(pecaId) Void
+        +fecharComAssinatura(fotoAntes, fotoDepois, assinatura) Result
+    }
+
+    class MedicaoTecnica {
+        -UUID id
+        -Float pressaoSucaoPsi
+        -Float pressaoDescargaPsi
+        -Float tempInsuflamentoC
+        -Float tempRetornoC
+        -Float correnteOperacaoA
+        +calcularDeltaT() Float
+        +calcularSuperaquecimento() Float
+        +calcularSubresfriamento() Float
+        +isInvarianteValida() Boolean
+    }
+
+    class LaudoPMOC {
+        -UUID id
+        -UUID ordemServicoId
+        -String hashSHA256
+        -Boolean filtroHigienizado
+        -Boolean drenoDesobstruido
+        -Boolean bandejaLimpa
+        -Boolean serpentinaHigienizada
+        -Float gasRecolhidoKg
+        -Float gasAdicionadoKg
+        +certificarConformidadeLei13589() StatusLaudo
+        +gerarHashImutavel() String
+    }
+
+    Equipamento "1" *-- "0..*" OrdemServico : recebe
+    OrdemServico "1" *-- "1..*" MedicaoTecnica : contém
+    OrdemServico "1" -- "0..1" LaudoPMOC : gera
+```
+
+### 5.3 Máquina de Estados da Ordem de Serviço (Statechart)
+Ciclo de vida que garante a inviolabilidade das regras:
+
+```mermaid
+stateDiagram-v2
+    [*] --> RASCUNHO : Criar chamado
+    RASCUNHO --> AGENDADA : [Equipamento ativo && Técnico disponível]
+    AGENDADA --> EM_DESLOCAMENTO : Despachar técnico
+    EM_DESLOCAMENTO --> EM_ATENDIMENTO : Ler QR Code no local
+
+    state EM_ATENDIMENTO {
+        [*] --> CheckIn
+        CheckIn --> ColetaMedicoes : [Manifold Conectado]
+        ColetaMedicoes --> RegistroFotos : [Delta T calculado]
+        RegistroFotos --> ColetaAssinatura : [Fotos Antes/Depois anexadas]
+    }
+
+    EM_ATENDIMENTO --> AGUARDANDO_PECA : [Peça em falta no estoque móvel]
+    AGUARDANDO_PECA --> EM_ATENDIMENTO : [Peça entregue em campo]
+    EM_ATENDIMENTO --> CONCLUIDA : [Checklist PMOC OK && Assinatura Coletada]
+    CONCLUIDA --> [*] : Gerar Hash SHA-256 e Laudo Imutável
+```
