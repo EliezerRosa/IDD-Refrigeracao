@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RefriFácil • Gestão de Campo HVAC & Refrigeração Comercial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070d18;
+      --surface: #0f172a;
+      --surface-card: #141e33;
+      --surface-active: #1e293b;
+      --border: #1e293b;
+      --border-focus: #38bdf8;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glow: rgba(56, 189, 248, 0.15);
+      --cyan: #38bdf8;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; display: flex; justify-content: center; }
+    .wrapper { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 20px; }
+
+    /* Header & Tabs */
+    header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand-box { display: flex; align-items: center; gap: 14px; }
+    .brand-logo {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    }
+    .brand-text h1 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .brand-text p { font-size: 13px; color: var(--text-muted); }
+
+    .nav-tabs { display: flex; background: var(--bg); padding: 4px; border-radius: 10px; border: 1px solid var(--border); gap: 4px; }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--surface-active); color: var(--cyan); }
+
+    /* Top Stats */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .kpi-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .kpi-info .kpi-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .kpi-info .kpi-value { font-size: 22px; font-weight: 800; margin-top: 2px; }
+
+    /* Layout Content */
+    .view-content { display: none; }
+    .view-content.active { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; }
+    @media (max-width: 900px) {
+      .view-content.active { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .panel-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    /* Forms */
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    input, select, textarea {
+      background: var(--bg);
+      border: 1px solid #243049;
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px var(--primary-glow); }
+    textarea { resize: vertical; min-height: 60px; }
+
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-green { background: #059669; }
+    .btn-green:hover { background: #047857; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+    .btn-outline { background: transparent; border: 1px solid #334155; }
+    .btn-outline:hover { background: #1e293b; }
+    .btn-icon { padding: 6px 10px; font-size: 14px; }
+
+    /* OS Feed */
+    .os-list { display: flex; flex-direction: column; gap: 12px; max-height: 680px; overflow-y: auto; padding-right: 4px; }
+    .os-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .os-card:hover { border-color: #334155; }
+    .os-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .os-client-name { font-size: 15px; font-weight: 800; color: #fff; }
+    .tag-segmento {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .tag-residencial { background: rgba(56, 189, 248, 0.15); color: var(--cyan); }
+    .tag-comercial { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-ABERTA { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .status-EM_ANDAMENTO { background: rgba(56, 189, 248, 0.15); color: var(--cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .status-CONCLUIDA { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .os-details { font-size: 13px; color: #cbd5e1; line-height: 1.45; }
+    .diagnostico-chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .chip {
+      background: var(--bg);
+      border: 1px solid #243049;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #94a3b8;
+      font-family: var(--font-mono);
+    }
+    .chip b { color: #fff; }
+
+    .os-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Modal Conclusão */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    .modal-dialog {
+      background: var(--surface);
+      border: 1px solid #334155;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 580px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8);
+    }
+    .calc-box {
+      background: var(--bg);
+      border: 1px solid #243049;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Recibo Imprimível */
+    #area-recibo-impressao {
+      display: none;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #area-recibo-impressao, #area-recibo-impressao * { visibility: visible; }
+      #area-recibo-impressao {
+        display: block !important;
+        position: absolute;
+        top: 0; left: 0; width: 100%;
+        color: #000;
+        background: #fff;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- Topbar -->
+  <header>
+    <div class="brand-box">
+      <div class="brand-logo">❄️</div>
+      <div class="brand-text">
+        <h1>RefriFácil • Atendimento Rápido</h1>
+        <p>Assistência Técnica Residencial & Refrigeração Comercial</p>
+      </div>
+    </div>
+    
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('os')">📋 Chamados de Campo</button>
+      <button class="tab-btn" onclick="switchView('equip')">🏪 Equipamentos & Negócios</button>
+      <button class="tab-btn" onclick="switchView('diag')">⚡ Termômetro & Diagnóstico</button>
+      <button class="tab-btn" onclick="switchView('relatorio')">📊 Faturamento & Garantias</button>
+    </div>
+  </header>
+
+  <!-- Linha de KPIs Rápidos -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--amber);">⏳</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Aguardando Visita</div>
+        <div class="kpi-value" id="kpi-abertas">0</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--cyan);">⏱️</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Em Execução Hoje</div>
+        <div class="kpi-value" id="kpi-andamento">0</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--green);">💰</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Faturamento Fechado</div>
+        <div class="kpi-value" id="kpi-faturamento">R$ 0,00</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">🛡️</div>
+      <div class="kpi-info">
+        <div class="kpi-label">Garantia Ativa (CDC)</div>
+        <div class="kpi-value" id="kpi-garantias">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 1: ORDENS DE SERVIÇO & ATENDIMENTO -->
+  <div class="view-content active" id="view-os">
+    <!-- Formulário Nova OS -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>➕ Abrir Nova OS / Agendamento</span>
+        <span style="font-size: 11px; color: var(--cyan); background: rgba(56,189,248,0.1); padding: 2px 8px; border-radius: 4px;">Modo Ágil</span>
+      </div>
+
+      <div class="form-group">
+        <label>Segmento do Atendimento</label>
+        <select id="os-tipo-cliente" onchange="adaptarAparelhosAoSegmento()">
+          <option value="RESIDENCIAL">🏠 Residencial (Ar Split de Casa/Apto)</option>
+          <option value="COMERCIAL">🏪 Pequeno Comércio (Padaria, Açougue, Bar, Mercado)</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome do Cliente / Estabelecimento</label>
+          <input type="text" id="os-cliente" placeholder="Ex: Panificadora Central / D. Regina">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp (com DDD)</label>
+          <input type="text" id="os-whats" placeholder="Ex: 11999998888">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Endereço / Referência de Chegada</label>
+        <input type="text" id="os-endereco" placeholder="Rua São Bento, 240 - Centro">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Aparelho Alvo</label>
+          <select id="os-equipamento">
+            <option value="Split Hi-Wall 9.000 a 12.000 BTU">Split Hi-Wall (Residencial)</option>
+            <option value="Split Inverter 18.000 a 24.000 BTU">Split Inverter Grande</option>
+            <option value="Ar Condicionado Janela 7.500">Ar Janela Convencional</option>
+            <option value="Balcão Refrigerado de Carnes">Balcão Refrigerado (Açougue)</option>
+            <option value="Freezer Horizontal Comercial">Freezer Comercial (Sorveteria/Bar)</option>
+            <option value="Expositor Vertical de Bebidas">Expositor de Bebidas (Lanchonete)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tipo de Intervenção</label>
+          <select id="os-servico">
+            <option value="LIMPEZA_HIGIENIZACAO">Higienização Completa</option>
+            <option value="CARGA_DE_GAS">Recarga de Gás Refrigerante</option>
+            <option value="CONSERTO_VAZAMENTO">Correção de Vazamento / Flange</option>
+            <option value="TROCA_CAPACITOR_MOTOR">Troca de Peça / Capacitor</option>
+            <option value="INSTALACAO">Instalação de Ponto Novo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Queixa / Sintoma Relatado</label>
+        <textarea id="os-defeito" placeholder="Ex: 'Não gela mais', 'Pingando água dentro', 'Barulho forte ao ligar'"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Turno Agendado</label>
+          <select id="os-turno">
+            <option value="MANHA">Manhã (08h às 12h)</option>
+            <option value="TARDE">Tarde (13h às 18h)</option>
+            <option value="EMERGENCIAL">🚨 Emergencial (Agora)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estimativa Mão de Obra (R$)</label>
+          <input type="number" id="os-orcamento-mo" value="180">
+        </div>
+      </div>
+
+      <button class="btn" onclick="criarOS()">Gravar e Enfileirar Chamado</button>
+    </div>
+
+    <!-- Feed de Chamados -->
+    <div class="panel">
+      <div class="panel-title">
+        <span>📋 Atendimentos Registrados</span>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-outline btn-sm" onclick="filtrarFeed('TODOS')">Todos</button>
+          <button class="btn btn-outline btn-sm" onclick="filtrarFeed('ABERTA')">Abertos</button>
+          <button class="btn btn-outline btn-sm" onclick="filtrarFeed('CONCLUIDA')">Concluídos</button>
+        </div>
+      </div>
+
+      <div class="os-list" id="os-feed">
+        <!-- Renderizado dinamicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: EQUIPAMENTOS E PEQUENOS COMÉRCIOS -->
+  <div class="view-content" id="view-equip">
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="panel-title">
+        <span>🏪 Parque de Máquinas dos Clientes Comerciais</span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted);">
+        Acompanhe balcões, freezers e expositores de padarias, açougues e bares para prevenir paradas emergenciais de perecíveis.
+      </p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 10px;" id="grid-comercial">
+        <!-- Expositores / Balcões Comerciais -->
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: SIMULADOR DE DIAGNÓSTICO RÁPIDO DE CAMPO -->
+  <div class="view-content" id="view-diag">
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="panel-title">
+        <span>⚡ Verificador Instantâneo de Eficiência Térmica (Termômetro & Manômetro)</span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+        Ferramenta de bolso para o técnico testar o rendimento térmico do split ou balcão na frente do cliente sem precisar de tabelas complexas.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Temp. Retorno (°C)</label>
+              <input type="number" id="diag-retorno" value="24" oninput="calcularDiagnostico()">
+            </div>
+            <div class="form-group">
+              <label>Temp. Saída/Insuflamento (°C)</label>
+              <input type="number" id="diag-saida" value="11" oninput="calcularDiagnostico()">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Pressão Baixa / Sucção (PSI)</label>
+              <input type="number" id="diag-psi" value="125" oninput="calcularDiagnostico()">
+            </div>
+            <div class="form-group">
+              <label>Fluido Gasoso</label>
+              <select id="diag-gas" onchange="calcularDiagnostico()">
+                <option value="R410A">R410A (Inverter Padrão)</option>
+                <option value="R32">R32 (Nova Geração)</option>
+                <option value="R134a">R134a (Balcões e Geladeiras)</option>
+                <option value="R22">R22 (Convencional Antigo)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: center; gap: 10px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Diagnóstico Térmico Prático:</div>
+          <div id="diag-resultado-deltat" style="font-size: 20px; font-weight: 800; color: var(--green);">Delta T: 13.0 °C (Excelente Rendimento)</div>
+          <div id="diag-resultado-pressao" style="font-size: 14px; color: #cbd5e1;">Pressão típica esperada: Faixa OK para o fluido selecionado.</div>
+          <div style="font-size: 12px; color: #64748b; margin-top: 4px;">* Padrão prático: Queda de temperatura (Delta T) entre 10°C e 16°C confirma rendimento satisfatório do ciclo frigorífico.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 4: FATURAMENTO & GARANTIAS -->
+  <div class="view-content" id="view-relatorio">
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="panel-title">
+        <span>📊 Relatório Financeiro e Controle de Garantias CDC</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+        <div style="background: var(--bg); border:1px solid var(--border); border-radius: 10px; padding: 16px;">
+          <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">TOTAL FATURADO (MÃO DE OBRA)</div>
+          <div id="rel-total-mo" style="font-size: 22px; font-weight: 800; color: var(--cyan); margin-top: 4px;">R$ 0,00</div>
+        </div>
+        <div style="background: var(--bg); border:1px solid var(--border); border-radius: 10px; padding: 16px;">
+          <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">TOTAL REPASSADO EM PEÇAS</div>
+          <div id="rel-total-pecas" style="font-size: 22px; font-weight: 800; color: var(--amber); margin-top: 4px;">R$ 0,00</div>
+        </div>
+        <div style="background: var(--bg); border:1px solid var(--border); border-radius: 10px; padding: 16px;">
+          <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">TICKET MÉDIO POR ATENDIMENTO</div>
+          <div id="rel-ticket-medio" style="font-size: 22px; font-weight: 800; color: var(--green); margin-top: 4px;">R$ 0,00</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <h3 style="font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 12px;">🛡️ Histórico de Serviços em Período de Garantia Legal (90 dias)</h3>
+        <div class="os-list" id="lista-garantias">
+          <!-- Lista de garantias ativas -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Conclusão & Envio WhatsApp -->
+<div class="modal-backdrop" id="modalConcluir">
+  <div class="modal-dialog">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+      <h2 style="font-size: 18px; font-weight: 800; color: #fff;">✅ Concluir Atendimento & Gerar Recibo</h2>
+      <button onclick="fecharModal()" style="background: transparent; border:none; color: var(--text-muted); cursor:pointer; font-size:18px;">✕</button>
+    </div>
+    <input type="hidden" id="modal-os-id">
+
+    <div class="form-group">
+      <label>Serviço Final Realizado</label>
+      <textarea id="modal-servico-executado" placeholder="Ex: Limpeza técnica do evaporador com aplicação de bactericida, desobstrução de dreno e conferência de pressão."></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Temp. Saída Final (°C)</label>
+        <input type="number" step="0.1" id="modal-saida-temp" value="11.0">
+      </div>
+      <div class="form-group">
+        <label>Pressão Final (PSI)</label>
+        <input type="number" id="modal-gas-psi" value="125">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Peças / Materiais (R$)</label>
+        <input type="number" id="modal-val-pecas" value="0.00" oninput="recalcModalTotal()">
+      </div>
+      <div class="form-group">
+        <label>Mão de Obra (R$)</label>
+        <input type="number" id="modal-val-mo" value="180.00" oninput="recalcModalTotal()">
+      </div>
+    </div>
+
+    <div class="calc-box">
+      <div>
+        <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">TOTAL DO ATENDIMENTO</div>
+        <div id="modal-display-total" style="font-size: 22px; font-weight: 800; color: var(--green);">R$ 180,00</div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <select id="modal-forma-pgto">
+          <option value="PIX">PIX</option>
+          <option value="Cartão de Crédito">Cartão de Crédito</option>
+          <option value="Cartão de Débito">Cartão de Débito</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 8px; padding: 10px; font-size: 12px; color: #a7f3d0;">
+      🛡️ <b>Garantia Legal de 90 dias</b> adicionada conforme o Código de Defesa do Consumidor (Art. 26).
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+      <button class="btn btn-outline btn-sm" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-green btn-sm" onclick="salvarConclusaoOS()">Disparar Recibo no WhatsApp 📲</button>
+    </div>
+  </div>
+</div>
+
+<!-- Área Invisível de Impressão de Recibo Físico -->
+<div id="area-recibo-impressao">
+  <h2 style="text-align: center; margin-bottom: 5px;">RefriFácil • Comprovante de Atendimento</h2>
+  <p style="text-align: center; font-size: 12px; margin-bottom: 20px;">Assistência Técnica HVAC & Refrigeração Comercial</p>
+  <hr style="margin-bottom: 15px;">
+  <div id="conteudo-recibo-print"></div>
+</div>
+
+<script>
+  let filtroAtual = 'TODOS';
+  let chamados = JSON.parse(localStorage.getItem('refri_facil_db') || '[]');
+
+  if (chamados.length === 0) {
+    chamados = [
+      {
+        id: "OS-201",
+        cliente: "Açougue & Casa de Carnes Boi Nobre",
+        whats: "11988881234",
+        tipoCliente: "COMERCIAL",
+        endereco: "Rua do Mercado, 510 - Loja B",
+        aparelho: "Balcão Refrigerado de Carnes",
+        servico: "CONSERTO_VAZAMENTO",
+        defeito: "Balcão começou a subir temperatura para 9°C, risco de perda de carnes",
+        turno: "EMERGENCIAL",
+        status: "EM_ANDAMENTO",
+        orcamentoMo: 320,
+        data: new Date().toLocaleDateString('pt-BR')
+      },
+      {
+        id: "OS-202",
+        cliente: "Juliana Mendes (Residência)",
+        whats: "11977774321",
+        tipoCliente: "RESIDENCIAL",
+        endereco: "Rua das Acácias, 115 - Casa 2",
+        aparelho: "Split Hi-Wall 12.000 BTU",
+        servico: "LIMPEZA_HIGIENIZACAO",
+        defeito: "Ventilador fraco e pingando gotas sobre a cama",
+        turno: "TARDE",
+        status: "ABERTA",
+        orcamentoMo: 180,
+        data: new Date().toLocaleDateString('pt-BR')
+      },
+      {
+        id: "OS-200",
+        cliente: "Padaria Doce Manhã",
+        whats: "11966665555",
+        tipoCliente: "COMERCIAL",
+        endereco: "Av. Central, 80",
+        aparelho: "Expositor Vertical de Bebidas",
+        servico: "TROCA_CAPACITOR_MOTOR",
+        defeito: "Motor zumbindo e não partia",
+        turno: "MANHA",
+        status: "CONCLUIDA",
+        servicoExecutado: "Substituição de capacitor 45uF + limpeza de condensador a ar",
+        tempSaida: "3.5",
+        pressaoGas: "60",
+        valPecas: 95,
+        valMo: 180,
+        total: 275,
+        formaPgto: "PIX",
+        garantiaDias: 90,
+        dataConclusao: new Date().toLocaleDateString('pt-BR'),
+        data: new Date().toLocaleDateString('pt-BR')
+      }
+    ];
+    persistir();
+  }
+
+  function persistir() {
+    localStorage.setItem('refri_facil_db', JSON.stringify(chamados));
+    render();
+  }
+
+  function adaptarAparelhosAoSegmento() {
+    const segmento = document.getElementById('os-tipo-cliente').value;
+    const selectAparelho = document.getElementById('os-equipamento');
+    selectAparelho.innerHTML = '';
+
+    if (segmento === 'RESIDENCIAL') {
+      selectAparelho.innerHTML = `
+        <option value="Split Hi-Wall 9.000 a 12.000 BTU">Split Hi-Wall (Residencial)</option>
+        <option value="Split Inverter 18.000 a 24.000 BTU">Split Inverter Sala</option>
+        <option value="Ar Condicionado Janela 7.500">Ar Janela Convencional</option>
+        <option value="Geladeira Residencial Frost Free">Geladeira Frost Free</option>
+      `;
+      document.getElementById('os-orcamento-mo').value = "180";
+    } else {
+      selectAparelho.innerHTML = `
+        <option value="Balcão Refrigerado de Carnes/Frios">Balcão Refrigerado (Açougue/Padaria)</option>
+        <option value="Expositor Vertical de Bebidas">Expositor de Bebidas (Bar/Mercado)</option>
+        <option value="Freezer Horizontal Comercial">Freezer Horizontal (Sorveteria/Bar)</option>
+        <option value="Cervejeira Comercial -4°C">Cervejeira Comercial</option>
+      `;
+      document.getElementById('os-orcamento-mo').value = "250";
+    }
+  }
+
+  function switchView(viewName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.view-content').forEach(view => view.classList.remove('active'));
+
+    const views = ['os', 'equip', 'diag', 'relatorio'];
+    const idx = views.indexOf(viewName);
+    if (idx !== -1) {
+      document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+      document.getElementById('view-' + viewName).classList.add('active');
+    }
+
+    if (viewName === 'equip') renderEquipamentosComerciais();
+    if (viewName === 'diag') calcularDiagnostico();
+    if (viewName === 'relatorio') renderRelatorios();
+  }
+
+  function filtrarFeed(filtro) {
+    filtroAtual = filtro;
+    render();
+  }
+
+  function criarOS() {
+    const cliente = document.getElementById('os-cliente').value.trim();
+    const whats = document.getElementById('os-whats').value.replace(/\D/g, '');
+    const endereco = document.getElementById('os-endereco').value.trim();
+    const defeito = document.getElementById('os-defeito').value.trim();
+    const tipoCliente = document.getElementById('os-tipo-cliente').value;
+    const aparelho = document.getElementById('os-equipamento').value;
+    const servico = document.getElementById('os-servico').value;
+    const turno = document.getElementById('os-turno').value;
+    const orcamentoMo = parseFloat(document.getElementById('os-orcamento-mo').value) || 150;
+
+    if (!cliente || !whats || !defeito) {
+      alert("Por favor, preencha o Nome do Cliente, WhatsApp e o Problema Reclamado.");
+      return;
+    }
+
+    const nova = {
+      id: "OS-" + Math.floor(203 + Math.random() * 800),
+      cliente,
+      whats,
+      tipoCliente,
+      endereco,
+      aparelho,
+      servico,
+      defeito,
+      turno,
+      status: "ABERTA",
+      orcamentoMo,
+      data: new Date().toLocaleDateString('pt-BR')
+    };
+
+    chamados.unshift(nova);
+    persistir();
+
+    document.getElementById('os-cliente').value = '';
+    document.getElementById('os-whats').value = '';
+    document.getElementById('os-endereco').value = '';
+    document.getElementById('os-defeito').value = '';
+    alert(`Chamado ${nova.id} aberto com sucesso!`);
+  }
+
+  function iniciarOS(id) {
+    const item = chamados.find(c => c.id === id);
+    if (item) {
+      item.status = "EM_ANDAMENTO";
+      persistir();
+    }
+  }
+
+  function abrirModalConclusao(id) {
+    const item = chamados.find(c => c.id === id);
+    if (!item) return;
+
+    document.getElementById('modal-os-id').value = id;
+    document.getElementById('modal-servico-executado').value = "Limpeza técnica do evaporador com aplicação de bactericida, desobstrução de dreno e conferência de pressão.";
+    document.getElementById('modal-saida-temp').value = "11.0";
+    document.getElementById('modal-gas-psi').value = "120";
+    document.getElementById('modal-val-pecas').value = "0.00";
+    document.getElementById('modal-val-mo').value = item.orcamentoMo || "180.00";
+    recalcModalTotal();
+
+    document.getElementById('modalConcluir').style.display = 'flex';
+  }
+
+  function fecharModal() {
+    document.getElementById('modalConcluir').style.display = 'none';
+  }
+
+  function recalcModalTotal() {
+    const p = parseFloat(document.getElementById('modal-val-pecas').value) || 0;
+    const m = parseFloat(document.getElementById('modal-val-mo').value) || 0;
+    const total = p + m;
+    document.getElementById('modal-display-total').innerText = "R$ " + total.toFixed(2).replace('.', ',');
+  }
+
+  function salvarConclusaoOS() {
+    const id = document.getElementById('modal-os-id').value;
+    const item = chamados.find(c => c.id === id);
+    if (!item) return;
+
+    const serv = document.getElementById('modal-servico-executado').value.trim();
+    const temp = document.getElementById('modal-saida-temp').value;
+    const psi = document.getElementById('modal-gas-psi').value;
+    const pecas = parseFloat(document.getElementById('modal-val-pecas').value) || 0;
+    const mo = parseFloat(document.getElementById('modal-val-mo').value) || 0;
+    const forma = document.getElementById('modal-forma-pgto').value;
+    const total = pecas + mo;
+
+    item.status = "CONCLUIDA";
+    item.servicoExecutado = serv;
+    item.tempSaida = temp;
+    item.pressaoGas = psi;
+    item.valPecas = pecas;
+    item.valMo = mo;
+    item.total = total;
+    item.formaPgto = forma;
+    item.garantiaDias = 90;
+    item.dataConclusao = new Date().toLocaleDateString('pt-BR');
+
+    persistir();
+    fecharModal();
+
+    // Disparo WhatsApp
+    const msg = `Olá *${item.cliente}*! ❄️\nAtendimento de refrigeração concluído com sucesso.\n\n` +
+      `📋 *Aparelho:* ${item.aparelho}\n` +
+      `🔧 *Serviço:* ${item.servicoExecutado}\n` +
+      `🌡️ *Teste de Saída:* ${item.tempSaida}°C | ${item.pressaoGas} PSI\n` +
+      `💰 *Valor Total:* R$ ${item.total.toFixed(2).replace('.', ',')} (${item.formaPgto})\n` +
+      `🛡️ *Garantia do Serviço:* 90 dias (CDC Art. 26)\n\n` +
+      `Qualquer dúvida ficamos à total disposição! Obrigado pela confiança.`;
+
+    const url = `https://api.whatsapp.com/send?phone=55${item.whats}&text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+
+  function reenviarWhatsApp(id) {
+    const item = chamados.find(c => c.id === id);
+    if (!item) return;
+    const msg = `Olá *${item.cliente}*! ❄️\nReenvio do comprovante de atendimento RefriFácil:\n\n` +
+      `📋 *Aparelho:* ${item.aparelho}\n` +
+      `🔧 *Serviço:* ${item.servicoExecutado}\n` +
+      `🌡️ *Teste Térmico:* ${item.tempSaida || '--'}°C | ${item.pressaoGas || '--'} PSI\n` +
+      `💰 *Total:* R$ ${(item.total || 0).toFixed(2).replace('.', ',')} (${item.formaPgto})\n` +
+      `🛡️ *Garantia Ativa:* 90 dias a contar de ${item.dataConclusao || item.data}\n\n` +
+      `RefriFácil • Assistência Técnica.`;
+
+    window.open(`https://api.whatsapp.com/send?phone=55${item.whats}&text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  function imprimirRecibo(id) {
+    const item = chamados.find(c => c.id === id);
+    if (!item) return;
+
+    const divPrint = document.getElementById('conteudo-recibo-print');
+    divPrint.innerHTML = `
+      <p><b>Número da OS:</b> ${item.id}</p>
+      <p><b>Cliente:</b> ${item.cliente} (${item.tipoCliente})</p>
+      <p><b>Telefone / WhatsApp:</b> ${item.whats}</p>
+      <p><b>Endereço:</b> ${item.endereco || 'Não informado'}</p>
+      <p><b>Aparelho:</b> ${item.aparelho}</p>
+      <hr>
+      <p><b>Serviço Executado:</b> ${item.servicoExecutado || item.defeito}</p>
+      <p><b>Testes Técnicos:</b> Saída: ${item.tempSaida || '--'}°C | Pressão: ${item.pressaoGas || '--'} PSI</p>
+      <p><b>Garantia do Serviço:</b> 90 dias conforme Art. 26 do Código de Defesa do Consumidor (CDC).</p>
+      <hr>
+      <p><b>Mão de Obra:</b> R$ ${(item.valMo || item.orcamentoMo).toFixed(2)}</p>
+      <p><b>Peças / Materiais:</b> R$ ${(item.valPecas || 0).toFixed(2)}</p>
+      <h3><b>TOTAL PAGO: R$ ${(item.total || item.orcamentoMo).toFixed(2)} (${item.formaPgto || 'A vista'})</b></h3>
+      <br><br>
+      <p style="text-align:center;">___________________________________________<br>Assinatura do Técnico / RefriFácil</p>
+    `;
+    window.print();
+  }
+
+  function calcularDiagnostico() {
+    const ret = parseFloat(document.getElementById('diag-retorno').value) || 0;
+    const sai = parseFloat(document.getElementById('diag-saida').value) || 0;
+    const psi = parseFloat(document.getElementById('diag-psi').value) || 0;
+    const gas = document.getElementById('diag-gas').value;
+
+    const deltaT = ret - sai;
+    const outDelta = document.getElementById('diag-resultado-deltat');
+    const outPsi = document.getElementById('diag-resultado-pressao');
+
+    if (deltaT >= 10 && deltaT <= 16) {
+      outDelta.innerHTML = `Delta T: ${deltaT.toFixed(1)} °C — <span style="color:var(--green)">Rendimento Ótimo!</span>`;
+    } else if (deltaT < 8) {
+      outDelta.innerHTML = `Delta T: ${deltaT.toFixed(1)} °C — <span style="color:var(--amber)">Atenção: Pouco Rendimento</span> (Filtro sujo ou falta de fluido)`;
+    } else {
+      outDelta.innerHTML = `Delta T: ${deltaT.toFixed(1)} °C — Rendimento Fora do Padrão`;
+    }
+
+    outPsi.innerHTML = `Para <b>${gas}</b> a pressão de sucção em ${psi} PSI está dentro dos limites de operação comercial/residencial.`;
+  }
+
+  function renderEquipamentosComerciais() {
+    const container = document.getElementById('grid-comercial');
+    container.innerHTML = '';
+
+    const comerciais = chamados.filter(c => c.tipoCliente === 'COMERCIAL');
+    if (comerciais.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Nenhum cliente comercial cadastrado ainda.</p>';
+      return;
+    }
+
+    comerciais.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'os-card';
+      card.innerHTML = `
+        <div class="os-card-header">
+          <div class="os-client-name">${c.cliente}</div>
+          <span class="tag-segmento tag-comercial">Comércio Local</span>
+        </div>
+        <div class="os-details">
+          <b>Máquina:</b> ${c.aparelho}<br>
+          <b>Endereço:</b> ${c.endereco || 'Não informado'}<br>
+          <b>Último Registro:</b> ${c.servicoExecutado || c.defeito}
+        </div>
+        <div style="font-size:12px; color:var(--cyan); font-weight:700;">
+          📞 WhatsApp: ${c.whats}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function renderRelatorios() {
+    const concluidas = chamados.filter(c => c.status === 'CONCLUIDA');
+    let totalMo = 0;
+    let totalPecas = 0;
+
+    concluidas.forEach(c => {
+      totalMo += (c.valMo || 0);
+      totalPecas += (c.valPecas || 0);
+    });
+
+    const totalGeral = totalMo + totalPecas;
+    const ticketMedio = concluidas.length > 0 ? (totalGeral / concluidas.length) : 0;
+
+    document.getElementById('rel-total-mo').innerText = "R$ " + totalMo.toFixed(2).replace('.', ',');
+    document.getElementById('rel-total-pecas').innerText = "R$ " + totalPecas.toFixed(2).replace('.', ',');
+    document.getElementById('rel-ticket-medio').innerText = "R$ " + ticketMedio.toFixed(2).replace('.', ',');
+
+    const listaGarantias = document.getElementById('lista-garantias');
+    listaGarantias.innerHTML = '';
+
+    if (concluidas.length === 0) {
+      listaGarantias.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Nenhuma garantia registrada ainda.</p>';
+      return;
+    }
+
+    concluidas.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'os-card';
+      card.innerHTML = `
+        <div class="os-card-header">
+          <div>
+            <b>${c.cliente}</b> — ${c.aparelho}
+            <div style="font-size:12px; color:var(--text-muted);">Serviço: ${c.servicoExecutado}</div>
+          </div>
+          <span class="status-badge status-CONCLUIDA">Garantia Ativa</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#cbd5e1;">
+          <span>Data Atendimento: <b>${c.dataConclusao || c.data}</b></span>
+          <span>Prazo Legal: <b>90 dias (CDC)</b></span>
+          <button class="btn btn-outline btn-sm" onclick="reenviarWhatsApp('${c.id}')">Reenviar WhatsApp 📲</button>
+        </div>
+      `;
+      listaGarantias.appendChild(card);
+    });
+  }
+
+  function render() {
+    const feed = document.getElementById('os-feed');
+    feed.innerHTML = '';
+
+    let abertas = 0;
+    let andamento = 0;
+    let faturamento = 0;
+    let garantias = 0;
+
+    let listaFiltrada = chamados;
+    if (filtroAtual !== 'TODOS') {
+      listaFiltrada = chamados.filter(c => c.status === filtroAtual);
+    }
+
+    chamados.forEach(c => {
+      if (c.status === 'ABERTA') abertas++;
+      if (c.status === 'EM_ANDAMENTO') andamento++;
+      if (c.status === 'CONCLUIDA') {
+        faturamento += (c.total || 0);
+        garantias++;
+      }
+    });
+
+    listaFiltrada.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'os-card';
+
+      let actions = '';
+      if (c.status === 'ABERTA') {
+        actions = `<button class="btn btn-sm" onclick="iniciarOS('${c.id}')">Iniciar Atendimento ⏱️</button>`;
+      } else if (c.status === 'EM_ANDAMENTO') {
+        actions = `<button class="btn btn-green btn-sm" onclick="abrirModalConclusao('${c.id}')">Emitir Recibo & WhatsApp 📲</button>`;
+      } else if (c.status === 'CONCLUIDA') {
+        actions = `
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline btn-sm" onclick="imprimirRecibo('${c.id}')" title="Imprimir Recibo Físico">🖨️ Imprimir</button>
+            <button class="btn btn-green btn-sm" onclick="reenviarWhatsApp('${c.id}')" title="Reenviar Recibo via WhatsApp">📲 WhatsApp</button>
+          </div>
+        `;
+      }
+
+      let techData = '';
+      if (c.status === 'CONCLUIDA') {
+        techData = `
+          <div class="diagnostico-chip-row">
+            <span class="chip">🌡️ Saída: <b>${c.tempSaida}°C</b></span>
+            <span class="chip">💨 Pressão: <b>${c.pressaoGas} PSI</b></span>
+            <span class="chip">🛡️ CDC: <b>90 dias</b></span>
+          </div>
+        `;
+      }
+
+      const tagClass = c.tipoCliente === 'COMERCIAL' ? 'tag-comercial' : 'tag-residencial';
+
+      card.innerHTML = `
+        <div class="os-card-header">
+          <div>
+            <span class="os-client-name">${c.cliente}</span>
+            <span class="tag-segmento ${tagClass}" style="margin-left:6px;">${c.tipoCliente}</span>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+              📍 ${c.endereco || 'Endereço não informado'} • 📱 ${c.whats}
+            </div>
+          </div>
+          <span class="status-badge status-${c.status}">${c.status.replace('_', ' ')}</span>
+        </div>
+
+        <div class="os-details">
+          <b>Aparelho:</b> ${c.aparelho} <br>
+          <b>Solicitação / Problema:</b> ${c.defeito}
+          ${c.servicoExecutado ? `<br><b>Executado:</b> ${c.servicoExecutado}` : ''}
+        </div>
+
+        ${techData}
+
+        <div class="os-card-footer">
+          <div style="font-size: 13px;">
+            ${c.status === 'CONCLUIDA' ? `Total: <b style="color:var(--green); font-size:16px;">R$ ${c.total.toFixed(2).replace('.', ',')}</b>` : `Estimativa MO: <b>R$ ${c.orcamentoMo}</b>`}
+          </div>
+          <div>${actions}</div>
+        </div>
+      `;
+
+      feed.appendChild(card);
+    });
+
+    document.getElementById('kpi-abertas').innerText = abertas;
+    document.getElementById('kpi-andamento').innerText = andamento;
+    document.getElementById('kpi-faturamento').innerText = "R$ " + faturamento.toFixed(2).replace('.', ',');
+    document.getElementById('kpi-garantias').innerText = garantias;
+  }
+
+  // Executar render inicial
+  render();
+</script>
+
+</body>
+</html>

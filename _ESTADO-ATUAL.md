@@ -1,28 +1,40 @@
 # MEMO & ESTADO ATUAL - Projeto IDD Refrigeração (HVAC-R) & Paradigma IDD
 
-**Data da Última Atualização:** 2026-10-26  
-**Fase Atual:** Paradigma IDD Consolidado, Especificações Canônicas de Domínio (HVAC-R & Casos de Uso), Produção e Publicação Multicanal no YouTube (Canais @eliezerjprosa e Zico Josias) e Arquitetura de Renderização Headless Estável.
+**Data da Última Atualização:** 2026-11-08  
+**Fase Atual:** Paradigma IDD Consolidado + **App RefriFácil (IDD Refrigeração Ágil)** Materializado (Protótipo Funcional, Schema Enxuto, Regras de Domínio e UI Standalone Operacional).
 
 ---
 
 ## 📌 1. O Que Já Foi Construído, Validado e Publicado
 
-### 1.1 Especificações Canônicas de Domínio e Fundamentação Teórica
+### 1.1 App IDD Refrigeração Ágil (`apps_exemplos/refrigeracao_pmoc/`) — NOVO (2026-11-08)
+Redefinição de escopo para **máxima simplicidade e foco na realidade prática**: pequenas assistências técnicas, refrigeristas autônomos, pequenos comércios locais (padarias, açougues, bares, mercadinhos) e clientes residenciais.
+- **`schema.sql` (PostgreSQL Enxuto):** Apenas 3 tabelas essenciais (`clientes`, `equipamentos`, `ordens_servico`), cálculo automático de valores (Peças + Mão de Obra = Total) e garantia legal do CDC de 90 dias.
+- **`domain_rules.ts` (TypeScript Puro):** Ciclo ágil de máquina de estados (`ABERTA` -> `EM_ANDAMENTO` -> `CONCLUIDA`), invariantes comerciais e gerador automático de mensagem/recibo para WhatsApp.
+- **`app_refrigeracao.html` (Protótipo UI Standalone):** 
+  - Layout dark mode responsivo sem dependências externas pesadas (armazenamento via `localStorage`).
+  - Formulário ágil com chaveamento automático de aparelhos por segmento (Split residencial vs. Balcões de carnes/expositores comerciais).
+  - Fluxo de campo para o técnico: início com 1 clique, modal de fechamento com inserção de temperatura de saída (°C), pressão (PSI), rateio de peças/serviço e meios de pagamento.
+  - Integração instantânea de disparo para WhatsApp (`api.whatsapp.com`) e suporte a impressão de comprovante físico.
+  - Abas complementares: **Parque de Máquinas Comerciais**, **Verificador Rápido de Delta T (°C)** e **Relatório Financeiro com Controle de Garantias CDC (90 dias)**.
+
+### 1.2 Especificações Canônicas de Domínio e Fundamentação Teórica
 - **Especificação Canônica de Domínio HVAC-R (`docs/refrigeracao_domain_spec.md`):** Mapeamento estrito das invariantes de climatização e refrigeração comercial/industrial, conformidade legal com **PMOC (Lei 13.589/2018 e Portaria MS 3.523/1998)**, balanço de fluidos refrigerantes, vácuo em mícrons, máquina de estados de OS e operação offline-first.
 - **Especificação de Bounded Contexts & Transações Atômicas (`docs/bounded_contexts_transacoes_atomicas_spec.md`):** Definição formal dos contextos delimitados (Operações Técnicas, Auditoria Legal/PMOC, Contratos/Financeiro, Almoxarifado/Fluidos), entidades agregadas e **Protocolo Canônico da Ação Atômica em 4 Fases** (Guarda, Mutação, Selagem, Compensação).
 - **Manifesto de Indexação Acadêmica & Engenharia de SEO do IDD (`docs/idd_seo_academic_keywords_manifest.md`):** Consolidação das **7 Perspectivas Teóricas & Acadêmicas** do Paradigma IDD (*Intent-Driven Development*), posicionando-o como Engenharia de Software 3.0 pós-sintaxe (IA Neuro-Simbólica, Compiladores Declarativos / Intent IR, SMT Solvers / Automated Reasoning, Engenharia Constitucional, Diff Semântico de Intenções e Sagas de Domínio).
 - **Visualizadores Interativos de MER e UML (`docs/visualizar_*.html`):** Dashboards e esquemas visuais com diagramas Mermaid e Crow's Foot para HVAC-R Refrigeração, Barbearia, Cafeteria e Racha de Conta.
 
-### 1.2 Apresentações Interativas de Zero-Rolagem e Demonstração UX
+### 1.3 Apresentações Interativas de Zero-Rolagem e Demonstração UX
 - **Apresentação Especial de Perspectiva Técnica (`apresentacao/apresentacao_idd_perspectiva_tecnica.html`):** Apresentação com 10 slides, 20 GIFs em alta resolução (10 reações de desenvolvedores + 10 reações de usuários reais) demonstrando a superação do "Vibe Coding" e os 5 pilares de formalização do IDD.
 - **Apresentação Técnica do MER (`apresentacao/apresentacao_mer.html`):** 8 slides técnicos para desenvolvedores e equipe de manutenção, detalhando tabelas, chaves primárias/estrangeiras, regras de negócio e narração sintética.
 - **Apresentação Bounded Contexts & Transações (`apresentacao/apresentacao_bounded_contexts_transacoes.html`):** Alinhamento visual e estrutural de segregação de contextos e isolamento transacional.
 - **Proposta Simplificada & Alinhamento (`apresentacao/proposta_simplificada.html` e `apresentacao/index.html`):** Jornada de 5 passos do mecânico sem atrito e comparativo "Sai vs Fica" para clientes.
 
-### 1.3 Aplicações de Referência com Regras e Schemas (`apps_exemplos/`)
+### 1.4 Aplicações de Referência com Regras e Schemas (`apps_exemplos/`)
 - **App Barbearia & Salão (`apps_exemplos/barbearia_agendamento/`):** Interface `app_barbearia.html`, regras em TypeScript (`domain_rules.ts`) e banco de dados relacional (`schema.sql`).
 - **App Cafeteria & Padaria (`apps_exemplos/cafeteria_comanda/`):** Interface de comandas e fichas técnicas (`app_cafeteria.html`), regras de invariantes (`domain_rules.ts`) e schema (`schema.sql`).
 - **App Racha de Conta & Pix (`apps_exemplos/racha_conta_pix/`):** Interface de divisão justa de consumo (`app_racha_conta.html`), regras puras de cálculo (`domain_rules.ts`) e schema (`schema.sql`).
+- **App RefriFácil HVAC-R Ágil (`apps_exemplos/refrigeracao_pmoc/`):** Novo exemplo canônico focado em assistência de campo rápida.
 
 ### 1.4 Motor de Renderização Motion Graphics (`motion_graphics_renderer/`)
 - **Arquitetura Frame-Pipe Determinística:** Superação definitiva da falha de congelamento de tela via Chromium Playwright headless através do desacoplamento total entre `page.screenshot()` e `FFmpeg image2pipe CFR`.
