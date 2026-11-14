@@ -293,6 +293,7 @@
       <button class="tab-btn" onclick="switchView('equip')">🏪 Equipamentos & Negócios</button>
       <button class="tab-btn" onclick="switchView('diag')">⚡ Termômetro & Diagnóstico</button>
       <button class="tab-btn" onclick="switchView('relatorio')">📊 Faturamento & Garantias</button>
+      <button class="tab-btn" onclick="switchView('mer')">🗄️ MER & Banco (IDD)</button>
     </div>
   </header>
 
@@ -519,6 +520,101 @@
       </div>
     </div>
   </div>
+
+  <!-- VIEW 5: MER & BANCO DE DADOS (IDD) -->
+  <div class="view-content" id="view-mer">
+    <div class="panel" style="grid-column: 1 / -1;">
+      <div class="panel-title">
+        <span>🗄️ Modelo Entidade-Relacionamento (MER Canônico • schema.sql)</span>
+        <span style="font-size: 11px; color: var(--green); background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); padding: 3px 10px; border-radius: 999px;">Escopo Enxuto • 3 Tabelas • CDC 90d</span>
+      </div>
+      <p style="font-size: 13px; color: var(--text-muted);">
+        Estrutura relacional enxuta do RefriFácil sincronizada em tempo real com os registros ativos no navegador (<span style="font-family:var(--font-mono); color:var(--cyan);">localStorage</span>).
+      </p>
+
+      <!-- Contadores vivos por entidade -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ENTIDADE: CLIENTES</div>
+          <div id="mer-count-clientes" style="font-size: 20px; font-weight: 800; color: var(--cyan); margin-top: 4px; font-family: var(--font-mono);">0 registros</div>
+        </div>
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ENTIDADE: EQUIPAMENTOS</div>
+          <div id="mer-count-equip" style="font-size: 20px; font-weight: 800; color: var(--amber); margin-top: 4px; font-family: var(--font-mono);">0 máquinas</div>
+        </div>
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px;">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">ENTIDADE: ORDENS_SERVICO</div>
+          <div id="mer-count-os" style="font-size: 20px; font-weight: 800; color: var(--green); margin-top: 4px; font-family: var(--font-mono);">0 ordens</div>
+        </div>
+      </div>
+
+      <!-- Diagrama MER 3 Tabelas com Crow's Foot -->
+      <div style="display: grid; grid-template-columns: 1fr auto 1fr auto 1.15fr; gap: 10px; align-items: stretch; margin-top: 6px;">
+        <!-- 1. clientes -->
+        <div style="background: var(--bg); border: 1px solid #243049; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+            <span style="font-family:var(--font-mono); font-weight:800; color:var(--cyan);">1. clientes</span>
+            <span class="chip">PK id</span>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1; line-height:1.7;">
+            <div><b style="color:var(--green);">PK id</b> : UUID</div>
+            <div>tipo_cliente : <span style="color:var(--amber);">CHECK(RESIDENCIAL|COMERCIAL)</span></div>
+            <div>nome_razao : VARCHAR(120)</div>
+            <div>whatsapp : VARCHAR(20) NOT NULL</div>
+            <div>endereco, bairro : VARCHAR</div>
+            <div>ativo, created_at : BOOL / TIMESTAMPTZ</div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--cyan); gap:4px;">
+          <span>1</span>
+          <span style="font-size:16px;">──&lt;</span>
+          <span>N</span>
+          <span style="font-size:10px; color:var(--text-muted);">CASCADE</span>
+        </div>
+
+        <!-- 2. equipamentos -->
+        <div style="background: var(--bg); border: 1px solid #243049; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+            <span style="font-family:var(--font-mono); font-weight:800; color:var(--cyan);">2. equipamentos</span>
+            <span class="chip">FK cliente_id</span>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1; line-height:1.7;">
+            <div><b style="color:var(--green);">PK id</b> : UUID</div>
+            <div><b style="color:var(--cyan);">FK cliente_id</b> → clientes(id)</div>
+            <div>identificacao : VARCHAR(80)</div>
+            <div>tipo_aparelho : <span style="color:var(--amber);">SPLIT|BALCAO|FREEZER...</span></div>
+            <div>marca, voltagem : VARCHAR</div>
+            <div>tipo_gas : <span style="color:var(--amber);">R410A|R32|R134a|R22|R290</span></div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--green); gap:4px;">
+          <span>1</span>
+          <span style="font-size:16px;">──&lt;</span>
+          <span>N</span>
+          <span style="font-size:10px; color:var(--text-muted);">SET NULL</span>
+        </div>
+
+        <!-- 3. ordens_servico -->
+        <div style="background: var(--bg); border: 1px solid rgba(16,185,129,0.45); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:8px;">
+            <span style="font-family:var(--font-mono); font-weight:800; color:var(--green);">3. ordens_servico</span>
+            <span class="chip" style="color:var(--green);">Núcleo OS</span>
+          </div>
+          <div style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1; line-height:1.7;">
+            <div><b style="color:var(--green);">PK id</b> : UUID</div>
+            <div><b style="color:var(--cyan);">FK cliente_id</b> (CASCADE) • <b style="color:var(--cyan);">FK equipamento_id</b> (SET NULL)</div>
+            <div>status : <span style="color:var(--amber);">ABERTA → EM_ANDAMENTO → CONCLUIDA</span></div>
+            <div>temperatura_insuflamento_c : NUMERIC(4,1) °C</div>
+            <div>pressao_gas_psi : NUMERIC(5,1) PSI</div>
+            <div><b style="color:var(--cyan);">valor_total</b> : <span style="color:var(--green);">GENERATED ALWAYS AS (peças + MO) STORED</span></div>
+            <div><b style="color:var(--green);">garantia_dias</b> : INT DEFAULT 90 (CDC Art. 26)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Modal Conclusão & Envio WhatsApp -->
@@ -684,7 +780,7 @@
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.view-content').forEach(view => view.classList.remove('active'));
 
-    const views = ['os', 'equip', 'diag', 'relatorio'];
+    const views = ['os', 'equip', 'diag', 'relatorio', 'mer'];
     const idx = views.indexOf(viewName);
     if (idx !== -1) {
       document.querySelectorAll('.tab-btn')[idx].classList.add('active');
@@ -694,6 +790,18 @@
     if (viewName === 'equip') renderEquipamentosComerciais();
     if (viewName === 'diag') calcularDiagnostico();
     if (viewName === 'relatorio') renderRelatorios();
+    if (viewName === 'mer') renderMerDashboard();
+  }
+
+  function renderMerDashboard() {
+    const clientesUnicos = new Set(chamados.map(c => c.cliente));
+    const equipUnicos = new Set(chamados.map(c => `${c.cliente}::${c.aparelho}`));
+    const elCli = document.getElementById('mer-count-clientes');
+    const elEq = document.getElementById('mer-count-equip');
+    const elOs = document.getElementById('mer-count-os');
+    if (elCli) elCli.innerText = `${clientesUnicos.size} clientes`;
+    if (elEq) elEq.innerText = `${equipUnicos.size} máquinas`;
+    if (elOs) elOs.innerText = `${chamados.length} ordens`;
   }
 
   function filtrarFeed(filtro) {

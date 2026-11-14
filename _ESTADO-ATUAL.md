@@ -16,7 +16,7 @@ Redefinição de escopo para **máxima simplicidade e foco na realidade prática
   - Formulário ágil com chaveamento automático de aparelhos por segmento (Split residencial vs. Balcões de carnes/expositores comerciais).
   - Fluxo de campo para o técnico: início com 1 clique, modal de fechamento com inserção de temperatura de saída (°C), pressão (PSI), rateio de peças/serviço e meios de pagamento.
   - Integração instantânea de disparo para WhatsApp (`api.whatsapp.com`) e suporte a impressão de comprovante físico.
-  - Abas complementares: **Parque de Máquinas Comerciais**, **Verificador Rápido de Delta T (°C)** e **Relatório Financeiro com Controle de Garantias CDC (90 dias)**.
+  - Abas complementares: **Parque de Máquinas Comerciais**, **Verificador Rápido de Delta T (°C)**, **Relatório Financeiro com Controle de Garantias CDC (90 dias)** e **MER & Banco (IDD)** com diagrama das 3 tabelas e contadores ao vivo sincronizados com o `localStorage`.
 - **Apresentação Completa do Protótipo (`apresentacao_prototipo_refrifacil.html` & `gerar_video_apresentacao_720p.py`):**
   - Apresentação interativa de 8 slides em `1280x720` com capturas reais das 4 abas + modal de conclusão da UI embutidas.
   - Pipeline Python (`playwright` + `edge_tts` em dueto `FranciscaNeural`/`AntonioNeural` + `ffmpeg` frame-pipe 30fps CFR) gerando o vídeo **`Apresentacao_Prototipo_RefriFacil_720p.mp4`** (`1280x720`, H.264/AAC, 238,9s, 10,39 MB) em `apps_exemplos/refrigeracao_pmoc/` e `apresentacao/`.

@@ -40,6 +40,7 @@
   - *Equipamentos & Negócios:* Monitoramento de máquinas de pequenos comércios.
   - *Termômetro & Diagnóstico:* Calculadora visual de $\Delta T$ ($T_{retorno} - T_{insuflamento}$) para demonstrar eficiência técnica ao cliente.
   - *Faturamento & Garantias:* Relatório de faturamento e listagem de garantias ativas dentro dos 90 dias com reenvio fácil via WhatsApp.
+  - *MER & Banco (IDD):* Aba interativa no dashboard exibindo o diagrama de 3 tabelas (`clientes`, `equipamentos`, `ordens_servico`), chaves `PK`/`FK` (`1:N` `CASCADE`/`SET NULL`), constraints SQL/CDC e contadores dinâmicos ligados ao `localStorage`.
 
 ### D. Apresentação Completa em HTML & Vídeo MP4 720p (14/11/2026)
 * **`apresentacao_prototipo_refrifacil.html`** (também espelhado em `apresentacao/apresentacao_prototipo_refrifacil.html`): Apresentação de 8 slides (`1280x720`, zero scroll) cobrindo o novo escopo enxuto, `schema.sql` (3 tabelas), `domain_rules.ts` (3 estados + Art. 26 CDC), todas as 4 abas reais e o modal de recibo/WhatsApp com capturas reais embutidas via Data URI.
