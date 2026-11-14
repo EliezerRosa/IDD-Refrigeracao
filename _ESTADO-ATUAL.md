@@ -1,13 +1,13 @@
 # MEMO & ESTADO ATUAL - Projeto IDD Refrigeração (HVAC-R) & Paradigma IDD
 
-**Data da Última Atualização:** 2026-11-08  
-**Fase Atual:** Paradigma IDD Consolidado + **App RefriFácil (IDD Refrigeração Ágil)** Materializado (Protótipo Funcional, Schema Enxuto, Regras de Domínio e UI Standalone Operacional).
+**Data da Última Atualização:** 2026-11-14  
+**Fase Atual:** Paradigma IDD Consolidado + **App RefriFácil (IDD Refrigeração Ágil)** Materializado com Apresentação Completa em HTML (`1280x720`) e Vídeo MP4 720p (`Apresentacao_Prototipo_RefriFacil_720p.mp4`).
 
 ---
 
 ## 📌 1. O Que Já Foi Construído, Validado e Publicado
 
-### 1.1 App IDD Refrigeração Ágil (`apps_exemplos/refrigeracao_pmoc/`) — NOVO (2026-11-08)
+### 1.1 App IDD Refrigeração Ágil (`apps_exemplos/refrigeracao_pmoc/`) — ATUALIZADO (2026-11-14)
 Redefinição de escopo para **máxima simplicidade e foco na realidade prática**: pequenas assistências técnicas, refrigeristas autônomos, pequenos comércios locais (padarias, açougues, bares, mercadinhos) e clientes residenciais.
 - **`schema.sql` (PostgreSQL Enxuto):** Apenas 3 tabelas essenciais (`clientes`, `equipamentos`, `ordens_servico`), cálculo automático de valores (Peças + Mão de Obra = Total) e garantia legal do CDC de 90 dias.
 - **`domain_rules.ts` (TypeScript Puro):** Ciclo ágil de máquina de estados (`ABERTA` -> `EM_ANDAMENTO` -> `CONCLUIDA`), invariantes comerciais e gerador automático de mensagem/recibo para WhatsApp.
@@ -17,6 +17,9 @@ Redefinição de escopo para **máxima simplicidade e foco na realidade prática
   - Fluxo de campo para o técnico: início com 1 clique, modal de fechamento com inserção de temperatura de saída (°C), pressão (PSI), rateio de peças/serviço e meios de pagamento.
   - Integração instantânea de disparo para WhatsApp (`api.whatsapp.com`) e suporte a impressão de comprovante físico.
   - Abas complementares: **Parque de Máquinas Comerciais**, **Verificador Rápido de Delta T (°C)** e **Relatório Financeiro com Controle de Garantias CDC (90 dias)**.
+- **Apresentação Completa do Protótipo (`apresentacao_prototipo_refrifacil.html` & `gerar_video_apresentacao_720p.py`):**
+  - Apresentação interativa de 8 slides em `1280x720` com capturas reais das 4 abas + modal de conclusão da UI embutidas.
+  - Pipeline Python (`playwright` + `edge_tts` em dueto `FranciscaNeural`/`AntonioNeural` + `ffmpeg` frame-pipe 30fps CFR) gerando o vídeo **`Apresentacao_Prototipo_RefriFacil_720p.mp4`** (`1280x720`, H.264/AAC, 238,9s, 10,39 MB) em `apps_exemplos/refrigeracao_pmoc/` e `apresentacao/`.
 
 ### 1.2 Especificações Canônicas de Domínio e Fundamentação Teórica
 - **Especificação Canônica de Domínio HVAC-R (`docs/refrigeracao_domain_spec.md`):** Mapeamento estrito das invariantes de climatização e refrigeração comercial/industrial, conformidade legal com **PMOC (Lei 13.589/2018 e Portaria MS 3.523/1998)**, balanço de fluidos refrigerantes, vácuo em mícrons, máquina de estados de OS e operação offline-first.

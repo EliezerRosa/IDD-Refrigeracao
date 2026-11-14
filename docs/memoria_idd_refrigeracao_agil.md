@@ -41,3 +41,8 @@
   - *Termômetro & Diagnóstico:* Calculadora visual de $\Delta T$ ($T_{retorno} - T_{insuflamento}$) para demonstrar eficiência técnica ao cliente.
   - *Faturamento & Garantias:* Relatório de faturamento e listagem de garantias ativas dentro dos 90 dias com reenvio fácil via WhatsApp.
 
+### D. Apresentação Completa em HTML & Vídeo MP4 720p (14/11/2026)
+* **`apresentacao_prototipo_refrifacil.html`** (também espelhado em `apresentacao/apresentacao_prototipo_refrifacil.html`): Apresentação de 8 slides (`1280x720`, zero scroll) cobrindo o novo escopo enxuto, `schema.sql` (3 tabelas), `domain_rules.ts` (3 estados + Art. 26 CDC), todas as 4 abas reais e o modal de recibo/WhatsApp com capturas reais embutidas via Data URI.
+* **`gerar_video_apresentacao_720p.py`**: Pipeline Python (`playwright.sync_api` + `edge_tts` em dueto `FranciscaNeural`/`AntonioNeural` + `ffmpeg` frame-pipe 30fps CFR) que gera o vídeo **`Apresentacao_Prototipo_RefriFacil_720p.mp4`** (`1280x720`, H.264/AAC, 238,9s, ~10,39 MB).
+* **Próximo Passo Imediato:** Testar interativamente a UI de `app_refrigeracao.html`.
+
